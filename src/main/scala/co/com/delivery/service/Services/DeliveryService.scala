@@ -28,14 +28,14 @@ import scala.io.Source
       //val bufferedSource = Source.fromFile("/home/s4n/Documents/in01.txt")
       val bufferedSource = Source.fromFile(urlInTxt)
       val lines = bufferedSource.getLines()
-      val deliveriesList: List[Delivery] = (lines.filter(_.nonEmpty).map(x => x.toList)).map(y =>
+      val deliveriesList: List[Delivery] = (lines.filter(_.nonEmpty).map(x => x.toList)).toList.map(y =>
         Delivery(y.map(z => z match {
           case 'A' => A()
           case 'I' => I()
           case 'D' => D()
           //case _ => throw new Exception(s"Caracter invalido para creacion de instruccion: $c")
-        }
-      )))
+        })
+      ))
       /*var deliveriesInstructions: List[String] = List("")
       for (line <- bufferedSource.getLines) {
         deliveriesInstructions = deliveriesInstructions :: line.toUpperCase

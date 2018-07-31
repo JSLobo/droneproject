@@ -38,4 +38,11 @@ class DeliveryService extends FunSuite{
     drone = DeliveryServiceInterpretation.makeDeliveries(drone, Route(List(Delivery(List(A(), A(), A(), A(), I(), A(), A(), D())), Delivery(List(D(), D(), A(), I(), A(), D())), Delivery(List(A(), A(), I(), A(), D(), A(), D())))))
     assert(Position(Coordinate(0,0), West()) == drone.position)
   }
+
+  test("Full delivery with txt reading"){
+
+    var drone: Drone = Drone(1, 10, Position(Coordinate(0,0), North()))
+    drone = DeliveryServiceInterpretation.makeDeliveries(drone, DeliveryServiceInterpretation.readInTxt("/home/s4n/Documents/in01.txt"))
+    assert(Position(Coordinate(-5,2), North()) == drone.position)
+  }
 }
