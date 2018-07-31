@@ -2,6 +2,8 @@ package co.com.delivery.service.Entities
 
 //import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position
 
+case class Drone(id: Int, capacity: Int, position: Position)
+
 sealed trait Movement{
   def applyMovement(position: Position): Position
 }

@@ -4,7 +4,7 @@
 		module="droneproject-build"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20180730154326"
+		publication="20180731102957"
 		e:sbtVersion="1.0" e:scalaVersion="2.12"
 	>
 		<description>

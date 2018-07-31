@@ -1,3 +1,5 @@
 [0m[[0m[0minfo[0m] [0m[0m[32mDeliveryService:[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m- A delivery *** FAILED ***[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  Position(Coordinate(-2,4),North()) did not equal Position(Coordinate(0,0),North()) (DeliveryService.scala:13)[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Init a delivery[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Continue delivery from previous step[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Continue delivery from previous step 2[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- Full delivery[0m[0m
