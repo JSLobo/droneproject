@@ -1,5 +1,6 @@
 package co.com.delivery.service.Services
 
+import java.io.{File, PrintWriter}
 import java.util.concurrent.Executors
 
 import co.com.delivery.service.Entities._
@@ -10,22 +11,25 @@ import scala.io.Source
 
 // API Algebra
   sealed trait deliveryServiceAlgebra{
-    //def readIn(inTxt: String):Future[Route]
-    //def makeDeliveries(routeFuture: Future[Route]): Position
+    def readAllPaths(pathsList: List[String]):List[Route]
     def readIn(urlIntxt: String):Route
     def readInTxt(urlIntxt: String):Route
-    def makeDelivery(position: Position, delivery: Delivery): List[Position]
+    def makeRoutes(routesList: List[Route]):List[Drone]
+    def makeDelivery(drone: Drone, delivery: Delivery): List[Drone]
     def makeDeliveries(drone: Drone, route: Route): Drone
-    def writeOut(deliveriesOutputs: List[String]):String
+    def writeOut(droneWithdeliveriesOutputs: Drone)
   }
 
 
   // Algebra interpretation
   sealed trait DeliveryServiceInterpretation extends deliveryServiceAlgebra{
-    //implicit val droneDelivery = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(20))
-    //override def readIn(deliveriesInstructions: String):Future[Route] = {
-    def readInTxt(urlInTxt: String):Route = {
-      //val bufferedSource = Source.fromFile("/home/s4n/Documents/in01.txt")
+    override def readAllPaths(pathsList: List[String]):List[Route]={
+      val routesList: List[Route] = pathsList.map(x =>  readInTxt(x))
+      routesList
+    }
+
+
+    override def readInTxt(urlInTxt: String):Route = {
       val bufferedSource = Source.fromFile(urlInTxt)
       val lines = bufferedSource.getLines()
       val deliveriesList: List[Delivery] = (lines.filter(_.nonEmpty).map(x => x.toList)).toList.map(y =>
@@ -33,101 +37,58 @@ import scala.io.Source
           case 'A' => A()
           case 'I' => I()
           case 'D' => D()
-          //case _ => throw new Exception(s"Caracter invalido para creacion de instruccion: $c")
         })
       ))
-      /*var deliveriesInstructions: List[String] = List("")
-      for (line <- bufferedSource.getLines) {
-        deliveriesInstructions = deliveriesInstructions :: line.toUpperCase
-      }
-*/
       bufferedSource.close
-
-      /*val deliveriesList: List[Delivery] = List(Delivery((deliveriesInstructions.toCharArray.toList).map(x =>
-        x match {
-          case 'A' => A()
-          case 'I' => I()
-          case 'D' => D()
-          //case _ => throw new Exception(s"Caracter invalido para creacion de instruccion: $c")
-        }
-      )))*/
       Route(deliveriesList)
     }
+
     override def readIn(deliveriesInstructions: String):Route = {
       val deliveriesList: List[Delivery] = List(Delivery((deliveriesInstructions.toCharArray.toList).map(x =>
         x match {
           case 'A' => A()
           case 'I' => I()
           case 'D' => D()
-          //case _ => throw new Exception(s"Caracter invalido para creacion de instruccion: $c")
         }
       )))
       Route(deliveriesList)
-      //Future(Route(deliveriesList))(droneDelivery)
     }
 
-    //override def makeDeliveries(routeFuture: Future[Route]):Position = {
-    /*override def makeDeliveries(drone: Drone, route: Route):Drone = {
-      //val initialPosition: Position = Position.apply(Coordinate(0,0),North())
-      //val id: Int = 1
-      //val capacity: Int = 10
-      //var drone: Drone(id, capacity, initialPosition, route)
-      var dronePosition: Position = drone.position
-      println(route)
-      println(drone)
-      //Future(Poliza(numero, List(Cobertura("1", "1.1"))))
-      //routeFuture.map(x =>
-        //(x.deliveries).map(y =>}
-      (route.deliveries).map(y =>
-          (y.direction).map(z => dronePosition= z.applyMovement(dronePosition)))
-      /*println(route.map(y =>
-          (y.direction).map(z => dronePosition= z.applyMovement(dronePosition)))))*/
-      val droneRetorno: Drone = Drone(1,10,dronePosition)
-      droneRetorno
-    }*/
+    override def makeRoutes(routesList: List[Route]):List[Drone]={
+      println(routesList.size)
+      val droneIdentificators: List[Int] = Range(1,routesList.size + 1).toList
+      val routeListZipDroneIdentificators: List[(Route, Int)] = routesList.zip(droneIdentificators)
+      //println(routeListZipDroneIdentificators)
+      val dronesList: List[Drone] = routeListZipDroneIdentificators.map(routeIdentified => makeDeliveries(Drone(routeIdentified._2, 10, Position(Coordinate(0,0), North()), List(Position(Coordinate(0,0), North()))),routeIdentified._1))
+      val dronesListToReturn: List[Drone] = dronesList
+      dronesList.map(x => writeOut(x))
+      dronesListToReturn
+      }
+
 
     override def makeDeliveries(drone: Drone, route: Route): Drone ={
-      //val dronePosition: Position = drone.position
-      val dronePositionFinal: List[Position] = (route.deliveries).foldLeft(List(drone.position)){(dronePosition, movement)
+      val dronePositionFinal: List[Drone] = (route.deliveries).foldLeft(List(drone)){(dronePosition, movement)
         => makeDelivery(dronePosition.head, movement)}
       println(dronePositionFinal)
-      /*println(route.map(y =>
-          (y.direction).map(z => dronePosition= z.applyMovement(dronePosition)))))*/
-      val droneRetorno: Drone = Drone(1,10,dronePositionFinal.last)
-      droneRetorno
-    //makeDeliverie(drone,)
+      val droneReturn: Drone = Drone(drone.id,drone.capacity, (dronePositionFinal.head).position, (dronePositionFinal.head).deliveriesPositions)
+      droneReturn
     }
 
-    override def makeDelivery(dronePosition: Position, delivery: Delivery):List[Position] = {
-      //val dronePosition: Position = drone.position
-      //val id: Int = 1
-      //val capacity: Int = 10
-      //var drone: Drone(id, capacity, initialPosition, route)
-      //var dronePosition: Position = drone.position
-      println(delivery)
-      println(dronePosition)
-      //Future(Poliza(numero, List(Cobertura("1", "1.1"))))
-      //routeFuture.map(x =>
-      //(x.deliveries).map(y =>}}
-      //--------
-      /*lista.foldLeft("") { (resultado, item) =>
-        cont = cont + 1
-        resultado + cont + "." + item + ","
-      }*/
-      //------
-      val dronePositionFinal: List[Position] = List((delivery.direction).foldLeft(dronePosition){ (dronePosition, movement) =>
-          movement.applyMovement(dronePosition)})
-      println(dronePositionFinal)
-      /*println(route.map(y =>
-          (y.direction).map(z => dronePosition= z.applyMovement(dronePosition)))))*/
-      //val droneRetorno: Drone = Drone(1,10,dronePositionFinal.last)
-      //val dronePositionFinal: Position = dronePositionTemp.head
-      dronePositionFinal
+    override def makeDelivery(drone: Drone, delivery: Delivery):List[Drone] = {
+      val dronePositionFinal: List[Position] = List((delivery.direction).foldLeft(drone.position){ (dronePosition, movement) =>
+        movement.applyMovement(dronePosition)})
+      //println(dronePositionFinal)
+      val dronePositionUpdated: List[Drone] = List(Drone(drone.id, drone.capacity, dronePositionFinal.head, (drone.deliveriesPositions):+ dronePositionFinal.head))
+      dronePositionUpdated
     }
 
-    override def writeOut(deliveriesOutputs: List[String]):String = {
-      //Future(Poliza(numero, List(Cobertura("1", "1.1"))))
-      "Hola"
+    override def writeOut(droneWithdeliveriesOutputs: Drone) {
+        val printWriter= new PrintWriter(new File(s"out${droneWithdeliveriesOutputs.id}.txt"))
+        println(droneWithdeliveriesOutputs)
+        printWriter.write("==Delivery Report==")
+      (droneWithdeliveriesOutputs.deliveriesPositions).tail.map(y=>printWriter.write(s"\n(${y.coordinate.x},${y.coordinate.y}) Orientation ${y.orientation}"))
+        printWriter.close()
+
     }
   }
 

@@ -1,4 +1,6 @@
-[0m[[0m[31merror[0m] [0m[0m/home/s4n/Documents/droneProject/src/main/scala/co/com/delivery/service/Services/DeliveryService.scala:76:48: ';' expected but ')' found.[0m
-[0m[[0m[31merror[0m] [0m[0m          movement.applyMovement(dronePosition))[0m
-[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/s4n/Documents/droneProject/src/main/scala/co/com/delivery/service/Services/DeliveryService.scala:64:17: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : List[co.com.delivery.service.Entities.Drone][0m
+[0m[[0m[31merror[0m] [0m[0m required: co.com.delivery.service.Entities.Drone[0m
+[0m[[0m[31merror[0m] [0m[0m      writeOut((dronesList))[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

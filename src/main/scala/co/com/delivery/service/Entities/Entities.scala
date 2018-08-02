@@ -2,7 +2,7 @@ package co.com.delivery.service.Entities
 
 //import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position
 
-case class Drone(id: Int, capacity: Int, position: Position)
+case class Drone(id: Int, capacity: Int, position: Position, deliveriesPositions: List[Position])
 
 sealed trait Movement{
   def applyMovement(position: Position): Position
@@ -49,16 +49,16 @@ sealed trait Movement{
 
 sealed trait Orientation
   case class North() extends Orientation {
-    val meaning: String = "N"
+    override def toString = "North"
   }
   case class South() extends Orientation {
-    val meaning: String = "S"
+    override def toString = "South"
   }
   case class West() extends Orientation {
-    val meaning: String = "W"
+    override def toString = "West"
   }
   case class East() extends Orientation {
-    val meaning: String = "E"
+    override def toString = "East"
   }
 
 case class Coordinate(x: Int, y: Int)
